@@ -4,33 +4,31 @@ require('dotenv').config();
 
 const client = new Client({ checkUpdate: false });
 
-// TOKEN - .env'den alınıyor
+// .env'den alınacak değişkenler
 const TOKEN = process.env.TOKEN;
-
-const MESSAGE = process.env.MESSAGE || '';
 const INVITE = process.env.INVITE;
+const MESSAGE = process.env.MESSAGE || '';
 
-const BLOCKED_GUILDS = process.env.BLOCKED_GUILDS ? process.env.BLOCKED_GUILDS.split(',') : [];
+// KANAL ID'LERİ (virgülle ayır)
+// Örnek: TARGET_CHANNELS=123456789,987654321,555555555
+const TARGET_CHANNELS = process.env.TARGET_CHANNELS ? process.env.TARGET_CHANNELS.split(',') : [];
 
 const FAILED_FILE = './failed.json';
-const RETRY_AFTER = 24 * 60 * 60 * 1000; // ⏱️ 24 saat
-const GLOBAL_COOLDOWN = 5 * 60 * 1000;
-const DELETE_DELAY = 40 * 60 * 1000;
+const RETRY_AFTER = 24 * 60 * 60 * 1000; // 24 saat
+const DELETE_DELAY = 40 * 60 * 1000; // 40 dakika
 
-const EMOJIS = ['🔥','😈','💎','👀','⚡','🚀','🧠'];//random emojiler elleme 
+const EMOJIS = ['🔥','😈','💎','👀','⚡','🚀','🧠'];
 
 const log = {
-  ok: (m) => console.log('[OK]', m),
-  err: (m) => console.log('[ERR]', m),
-  warn: (m) => console.log('[WARN]', m),
-  info: (m) => console.log('[INFO]', m),
+  ok: (m) => console.log('[✅]', m),
+  err: (m) => console.log('[❌]', m),
+  info: (m) => console.log('[ℹ️]', m),
 };
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 const randEmoji = () => EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
 
-// ===== failed.json (TTL'li) =====
-// Format: { "<id>": <timestamp> }
+// failed.json işlemleri
 let failed = {};
 if (fs.existsSync(FAILED_FILE)) {
   try { failed = JSON.parse(fs.readFileSync(FAILED_FILE, 'utf8')); } catch {}
@@ -55,56 +53,66 @@ const sendWithTimeout = (channel, content, timeout = 15000) => {
 
 client.on('ready', async () => {
   log.ok(`Giriş yapıldı: ${client.user.username}`);
+  log.info(`Hedef kanal sayısı: ${TARGET_CHANNELS.length}`);
 
-  for (const guild of client.guilds.cache.values()) {
-    if (BLOCKED_GUILDS.includes(guild.id)) continue;
-    if (isFailed(guild.id)) continue;
+  if (TARGET_CHANNELS.length === 0) {
+    log.err('HATA: TARGET_CHANNELS boş! .env dosyasına kanal IDleri ekle');
+    return;
+  }
 
-    for (const channel of guild.channels.cache.values()) {
-      if (channel.type !== 'GUILD_TEXT') continue;
-      if (isFailed(channel.id)) continue;
+  for (const channelId of TARGET_CHANNELS) {
+    const channel = client.channels.cache.get(channelId.trim());
+    
+    if (!channel) {
+      log.err(`Kanal bulunamadı: ${channelId}`);
+      continue;
+    }
 
-      if (!channel.permissionsFor(client.user)?.has('SEND_MESSAGES')) {
-        markFailed(channel.id); 
-        continue;
-      }
+    if (channel.type !== 'GUILD_TEXT') {
+      log.err(`Kanal metin kanalı değil: ${channelId}`);
+      continue;
+    }
 
-      try {
-        const delay = Math.floor(Math.random() * 1000) + 2000;
-        await sleep(delay);
+    if (isFailed(channelId)) {
+      log.info(`Kanal cooldown'da: ${channelId}`);
+      continue;
+    }
 
-        const msg = await sendWithTimeout(
-          channel,
-          `${MESSAGE} ${randEmoji()}`
-        );
+    if (!channel.permissionsFor(client.user)?.has('SEND_MESSAGES')) {
+      log.err(`Mesaj izni yok: ${channelId}`);
+      markFailed(channelId);
+      continue;
+    }
 
-        log.ok(`Gönderildi → ${guild.name} / ${channel.name}`);
+    try {
+      const delay = Math.floor(Math.random() * 1000) + 2000;
+      await sleep(delay);
 
-        setTimeout(() => msg.delete().catch(() => {}), DELETE_DELAY);
+      const msg = await sendWithTimeout(
+        channel,
+        `${MESSAGE} ${randEmoji()}`
+      );
 
-      } catch (e) {
-        log.err(`Fail/Timeout → ${guild.id} / ${channel.id}`);
+      log.ok(`Mesaj gönderildi → ${channel.guild.name} / ${channel.name}`);
 
-        markFailed(channel.id);
+      // 40 dakika sonra sil
+      setTimeout(() => msg.delete().catch(() => {}), DELETE_DELAY);
 
-        if (e.message === 'SEND_TIMEOUT') {
-          markFailed(guild.id);
-        }
-
-        fs.writeFileSync(FAILED_FILE, JSON.stringify(failed, null, 2));
-        continue;
-      }
+    } catch (e) {
+      log.err(`Hata: ${channelId} - ${e.message}`);
+      markFailed(channelId);
+      fs.writeFileSync(FAILED_FILE, JSON.stringify(failed, null, 2));
     }
   }
 
-  log.info('Tüm sunucular tamamlandı. Cooldown...');
-  setTimeout(() => GLOBAL_COOLDOWN);
+  log.info('Tüm kanallar tamamlandı!');
 });
 
 client.on('messageCreate', async (msg) => {
   if (msg.channel.type !== 'DM') return;
   if (msg.author.id === client.user.id) return;
 
+  // DM'de daha önce invite gönderilmiş mi kontrol et
   const history = await msg.channel.messages.fetch({ limit: 50 });
   if (history.some(m => m.content.includes(INVITE))) return;
 
@@ -123,5 +131,15 @@ process.on('exit', () => {
   fs.writeFileSync(FAILED_FILE, JSON.stringify(failed, null, 2));
 });
 
-setInterval(() => {}, 1000);
+// Token yoksa hata ver
+if (!TOKEN) {
+  log.err('TOKEN bulunamadı! .env dosyasını kontrol et');
+  process.exit(1);
+}
+
+if (!INVITE) {
+  log.err('INVITE bulunamadı! .env dosyasını kontrol et');
+  process.exit(1);
+}
+
 client.login(TOKEN);
