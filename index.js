@@ -110,3 +110,16 @@ client.on('messageCreate', async (msg) => {
 
 setInterval(() => {}, 1000);
 client.login(process.env.TOKEN);
+
+// ===== RENDER İÇİN SUNUCU =====
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 10000;
+
+app.get('/', (req, res) => {
+  res.send('Bot çalışıyor! 👋');
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🌐 Web sunucusu ${PORT} portunda hazır`);
+});
