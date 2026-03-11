@@ -10,9 +10,7 @@ const MESSAGE = '# TRADİNG/BUYİNG DRAGONFLY DM ME';
 const INVITE = 'https://discord.gg/WkXs2q2SeN';
 
 // hedef kanallar
-const TARGET_CHANNELS =
-  '1365731632534917141'
-];
+const TARGET_CHANNELS = '1365731632534917141';
 
 const DELETE_DELAY = 40 * 60 * 1000;
 
