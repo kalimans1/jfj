@@ -4,13 +4,16 @@ const fs = require('fs');
 const client = new Client({ checkUpdate: false });
 
 // TOKEN
-const TOKEN = process.env.TOKEN ;
+const TOKEN = process.env.TOKEN;
 
-const MESSAGE = '# TRADİNG/BUYİNG DRAGONFLY DM ME';
-const INVITE = 'https://discord.gg/WkXs2q2SeN';
+const MESSAGE = 'send me dm';
+const INVITE = 'aaa';
 
 // hedef kanallar
-const TARGET_CHANNELS = '1365731632534917141';
+const TARGET_CHANNELS = [
+  'KANAL_ID_1',
+  'KANAL_ID_2'
+];
 
 const DELETE_DELAY = 40 * 60 * 1000;
 
@@ -109,17 +112,4 @@ client.on('messageCreate', async (msg) => {
 });
 
 setInterval(() => {}, 1000);
-client.login(process.env.TOKEN);
-
-// ===== RENDER İÇİN SUNUCU =====
-const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 10000;
-
-app.get('/', (req, res) => {
-  res.send('Bot çalışıyor! 👋');
-});
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🌐 Web sunucusu ${PORT} portunda hazır`);
-});
+client.login(TOKEN);
