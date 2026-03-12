@@ -9,6 +9,9 @@
   "keywords": ["discord", "bot", "auto-reply"],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "18.x"
+  },
   "dependencies": {
     "discord.js-selfbot-v13": "^2.14.12",
     "dotenv": "^16.3.1"
