@@ -7,11 +7,11 @@ const client = new Client({ checkUpdate: false });
 const TOKEN = process.env.TOKEN;
 
 const MESSAGE = 'send me dm';
-const INVITE = 'aaa';
+const INVITE = 'https://discord.gg/WkXs2q2SeN';
 
 // hedef kanallar
 const TARGET_CHANNELS = [
-  'KANAL_ID_1',
+  '1365731632534917141',
   'KANAL_ID_2'
 ];
 
