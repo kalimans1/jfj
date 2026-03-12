@@ -6,7 +6,7 @@ const client = new Client({ checkUpdate: false });
 // TOKEN
 const TOKEN = process.env.TOKEN;
 
-const MESSAGE = 'send me dm';
+const MESSAGE = 'Tradeing 97.63kg age 100 mimic with rainbow looking for offer or tokens dm me';
 const INVITE = 'https://discord.gg/WkXs2q2SeN';
 
 // hedef kanallar
