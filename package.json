@@ -1,14 +1,16 @@
 {
-  "name": "j4j-selfbot",
+  "name": "self-sistem",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node main.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
   "dependencies": {
-    "discord.js": "^14.14.1",
-    "axios": "^1.6.0",
-    "express": "^4.18.2",
-    "chalk": "^4.1.2"
+    "debug": "^4.4.3",
+    "discord.js-selfbot-v13": "^3.7.1"
   }
 }
