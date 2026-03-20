@@ -1,12 +1,20 @@
 {
-  "Mobile_Status": true,
-  "Status_Texts": ["Free Raccoons giving!", ""],
-  "Status_Emojis": ["🦝", "🔥"],
-  "Webhook": "",
-  "Invite_Guild_ID": "1408455458326577212",  // Buraya KATILIM LOGLANACAK SUNUCU ID'si
-  "Status": "online",
-  "Delay": 30,
-  "Guild_ID": "1358536829636448418",          // Buraya MESAJ ATILACAK SUNUCU ID'si
-  "J4J_Channel_Names": ["🔍│looking-for ", "join"],
-  "Channel_Messages": ["Frees Raccoons DM me!"],
-  "DM_Messages": ["Join! owners giving raccoon https://discord.gg/dNSsZuteJj"],
+  "token": process.env.token,
+  "autoMessages": [
+    {
+      "serverId": "1347149052009123862",
+      "channelId": "1484493129263349923",
+      "timeAsMinutes": 1,
+      "text": "Bu mesaj 5 dakikada bir gönderilecek."
+    },
+    {
+      "serverId": "SUNUCU_ID_2",
+      "channelId": "KANAL_ID_2",
+      "timeAsMinutes": 10,
+      "text": "Bu mesaj 10 dakikada bir gönderilecek."
+    }
+  ],
+  "dmReplies": [
+    "Merhaba, bu sana ilk otomatik yanıtım.",
+    "Bana ikinci kez yazdın, bu sana son otomatik yanıtımdır. Daha fazla cevap vermeyeceğim."
+  ]
