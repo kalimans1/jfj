@@ -1,5 +1,5 @@
 {
-  "token": process.env.token ,
+  "token": "MTM0Njk4MjEyODA4MDEzMDA5OA.GU3KDH.pQ9kzrOI5SUGMuB01WhU",
   "autoMessages": [
     {
       "serverId": "1347149052009123862",
