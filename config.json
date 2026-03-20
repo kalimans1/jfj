@@ -1,0 +1,12 @@
+{
+  "Mobile_Status": true,
+  "Status_Texts": ["Free Raccoons giving!", ""],
+  "Status_Emojis": ["🦝", "🔥"],
+  "Webhook": "",
+  "Invite_Guild_ID": "1408455458326577212",  // Buraya KATILIM LOGLANACAK SUNUCU ID'si
+  "Status": "online",
+  "Delay": 30,
+  "Guild_ID": "1358536829636448418",          // Buraya MESAJ ATILACAK SUNUCU ID'si
+  "J4J_Channel_Names": ["🔍│looking-for ", "join"],
+  "Channel_Messages": ["Frees Raccoons DM me!"],
+  "DM_Messages": ["Join! owners giving raccoon https://discord.gg/dNSsZuteJj"],
